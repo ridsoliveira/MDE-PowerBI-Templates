@@ -25,6 +25,9 @@
 # v1 script to add deleted shortcuts back for common application.
 # Credits: https://github.com/InsideTechnologiesSrl/DefenderBug/blob/main/W11-RestoreLinks.ps1
 
+# Will get Administrators group name in any OS language
+$GetAdminLocalGroupInAnyLanguage = (Get-LocalGroup -SID 'S-1-5-32-544').Name
+
 $programs = @{
     "Adobe Acrobat"                = "Acrobat.exe"
     "Adobe Photoshop 2023"         = "photoshop.exe"
@@ -84,7 +87,7 @@ Function LogErrorAndConsole($message) {
 Function CopyAclFromOwningDir($path) {
     $base_path = Split-Path -Path $path
     $acl = Get-Acl $base_path
-	$group = New-Object System.Security.Principal.NTAccount("Builtin", "Administrators")
+	$group = New-Object System.Security.Principal.NTAccount("Builtin", "$GetAdminLocalGroupInAnyLanguage")
 	$acl.SetOwner($group)
     Set-Acl $path $acl
 }
